@@ -93,7 +93,7 @@ module Rack
       sanitize_params!(req.params)
 
       # Validate claimed_id
-      if @options[:valid_claim_patterns]
+      if @options[:valid_claim_patterns] && req.params['openid.claimed_id']
         matches_any = false
         # puts "verifying claimed_id = #{req.params['openid.claimed_id']}"
         @options[:valid_claim_patterns].each do |valid_claim_pattern|
