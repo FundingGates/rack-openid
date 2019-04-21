@@ -20,7 +20,7 @@ GEM
       minitest (~> 5.0)
     rack (1.5.2)
     rake (10.1.0)
-    ruby-openid (2.3.0)
+    ruby-openid (2.7.0)
 
 PLATFORMS
   ruby
@@ -32,3 +32,6 @@ DEPENDENCIES
   rack-openid!
   rake
   rots!
+
+BUNDLED WITH
+   2.0.1
