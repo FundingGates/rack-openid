@@ -79,9 +79,10 @@ module Rack
     # or
     #
     #   use Rack::OpenID, OpenID::Store::Memcache.new
-    def initialize(app, store = nil)
+    def initialize(app, store = nil, options = {})
       @app = app
       @store = store || default_store
+      @options = options
     end
 
     # Standard Rack +call+ dispatch that accepts an +env+ and
@@ -90,6 +91,19 @@ module Rack
       req = Rack::Request.new(env)
 
       sanitize_params!(req.params)
+
+      # Validate claimed_id
+      if @options[:valid_claim_patterns]
+        matches_any = false
+        # puts "verifying claimed_id = #{req.params['openid.claimed_id']}"
+        @options[:valid_claim_patterns].each do |valid_claim_pattern|
+          # puts "  ~= #{valid_claim_pattern}"
+          matches_any = true if req.params['openid.claimed_id'].match(valid_claim_pattern)
+        end
+        if matches_any === false
+          raise RuntimeError, "OpenID: claimed_id is not valid. Likely a forgery"
+        end
+      end
 
       if req.params["openid.mode"]
         complete_authentication(env)
